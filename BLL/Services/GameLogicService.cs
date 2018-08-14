@@ -1,42 +1,46 @@
-﻿using BLL.Repositories;
+﻿using BLL.IRepositories;
+using BLL.Repositories;
 using DAL.Entities;
+using Mapper;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using VML;
 
 namespace BLL.Services
 {
     public class GameLogicService
     {
         static Random random;
-        Repository<Player> playerRepository;
-        Repository<Card> cardRepository;
+        IGenericRepository<Player> playerRepository;
+        IGenericRepository<Card> cardRepository;
 
-        public GameLogicService()
+        public GameLogicService(IGenericRepository<Player> PlayersGenericRepository,
+            IGenericRepository<Card> CardsGenericRepository)
         {
-            playerRepository = new Repository<Player>(new DAL.BlackJackContext());
-            cardRepository = new Repository<Card>(new DAL.BlackJackContext());
+            this.playerRepository = PlayersGenericRepository;
+            this.cardRepository = CardsGenericRepository;
+        }
+
+        static GameLogicService()
+        {
             random = new Random();
-        }
+        } 
 
-        public async Task GiveCardsOnStart()
-        {
-            foreach(var p in await playerRepository.Get())
-            {
-                for (int i = 0; i < 2; i++)
-                {
-                    Card card = cardRepository.Pop();
-                    p.Cards.Add(card);
-                }
-            }
-        }
+        //public async Task GiveCards()
+        //{
+        //    foreach(var p in await playerRepository.Get())
+        //    {
+        //        Card card = cardRepository.Pop();
+        //        p.Cards.Add(card);
+        //    }
+        //}
 
-        public async Task GiveCards()
+        public async Task<IEnumerable<ViewModelPlayer>> GetAllPlayers()
         {
-            foreach(var p in await playerRepository.Get())
-            {
-                Card card = cardRepository.Pop();
-                p.Cards.Add(card);
-            }
+            var playersList = await playerRepository.GetAllWithNoTracking();
+            IEnumerable<ViewModelPlayer> playersViewModel = Map.MapPlayersList(playersList);
+            return playersViewModel;
         }
     }
 }

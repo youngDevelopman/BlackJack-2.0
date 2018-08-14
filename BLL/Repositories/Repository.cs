@@ -14,11 +14,6 @@ namespace BLL.Repositories
         BlackJackContext _context;
         DbSet<TEntity> _dbSet;
 
-        public Repository()
-        {
-                
-        }
-
         public Repository(BlackJackContext context)
         {
             _context = context;
@@ -27,12 +22,12 @@ namespace BLL.Repositories
 
         public async Task<IEnumerable<TEntity>> Get()
         {
-            return await _dbSet.AsNoTracking().ToListAsync();
+            return await _dbSet.ToListAsync();
         }
 
         public IEnumerable<TEntity> Get(Func<TEntity, bool> predicate)
         {
-            return _dbSet.AsNoTracking().Where(predicate).ToList();
+            return _dbSet.Where(predicate).ToList();
         }
         public async Task<TEntity> FindById(int id)
         {
@@ -66,6 +61,11 @@ namespace BLL.Repositories
             var card = _context.Cards.ToList().Last();
             _context.Cards.Remove(card);
             return card;
+        }
+
+        public async Task<List<TEntity>> GetAllWithNoTracking()
+        {
+            return await _dbSet.AsNoTracking().ToListAsync();
         }
     }
 }

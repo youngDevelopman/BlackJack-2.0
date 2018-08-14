@@ -13,6 +13,7 @@ namespace DAL.Entities
         public int Id { get; set; }
         public int CardValue { get; set; }
         public string Suit { get; set; }
+        public bool IsTaken { get; set; }
 
         public virtual ICollection<Player> Players { get; set; }
 

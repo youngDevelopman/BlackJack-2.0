@@ -14,11 +14,21 @@ namespace DAL
         {
             Database.SetInitializer<BlackJackContext>(new BlackJackDbInitializer());
         }
-        public BlackJackContext(): base("BlackJackContex")
+        public BlackJackContext(): base("BlackJackContext")
         { }
 
         public DbSet<Card> Cards { get; set; }
         public DbSet<Player> Players { get; set; }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 
     public class BlackJackDbInitializer : DropCreateDatabaseAlways<BlackJackContext>

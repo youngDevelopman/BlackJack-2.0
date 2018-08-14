@@ -6,39 +6,42 @@ namespace BlackJack.Controllers
 {
     public class HomeController : Controller
     {
+        GameSetService gameSetService;
+        GameLogicService gameLogicService;
+
+
+        public HomeController(GameSetService gameSet, GameLogicService gameLogic)
+        {
+            gameSetService = gameSet;
+            gameLogicService = gameLogic;
+        }
+
         public async Task<ActionResult> Index()
         {
-            GameSetService gameSetService = new GameSetService();
             var cardsList = await gameSetService.SetDeck();
             return View(cardsList);
         }
 
-        [HttpGet]
+        
         public async Task<ActionResult> About()
         {
-            GameSetService gameSetService = new GameSetService();
             var players = await gameSetService.SetPlayers();
-            GameLogicService gameLogicService = new GameLogicService();
-            await gameLogicService.GiveCardsOnStart();
-            players = await gameSetService.SetPlayers();
-
-            //return Json(players, JsonRequestBehavior.AllowGet);
-            return View(players);
+            var playersViewModel = await gameSetService.GiveCardsOnStart();
+            return View(playersViewModel);
         }
 
         public async Task<ActionResult> Contact()
         {
-            GameSetService gameSetService = new GameSetService();
-            var playersViewModel = await gameSetService.GetAllPlayers();
+            var playersViewModel = await gameLogicService.GetAllPlayers();
 
             return View(playersViewModel);
         }
 
-        public async Task<ActionResult> DrawCard()
-        {
-            GameLogicService gameLogicService = new GameLogicService();
-            await gameLogicService.GiveCards();
-            return RedirectToAction("Contact");
-        }
+        //public async Task<ActionResult> DrawCard()
+        //{
+        //    GameLogicService gameLogicService = new GameLogicService();
+        //    await gameLogicService.GiveCards();
+        //    return RedirectToAction("Contact");
+        //}
     }
 }

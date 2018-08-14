@@ -14,5 +14,7 @@ namespace BLL.IRepositories
         IEnumerable<TEntity> Get(Func<TEntity, bool> predicate);
         Task Remove(TEntity item);
         Task Update(TEntity item);
+        Task Save();
+        Task<List<TEntity>> GetAllWithNoTracking();
     }
 }
